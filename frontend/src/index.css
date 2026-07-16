@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+.leftSidebar-mainBox h1 {
+  display: none;
+}
+
+.leftSidebar-mainBox:hover {
+  .leftSidebar-mainBox h1 {
+    display: block;
+  }
+}
