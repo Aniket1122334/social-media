@@ -89,7 +89,7 @@ const Comments = ({ postId, setSelectedPostId }) => {
                   />
 
                   <div className="flex-1">
-                    <p className="text-white text-sm leading-6 break-words">
+                    <p className="text-white text-sm leading-6 wrap-break-word">
                       <span className="font-semibold mr-2">
                         {comment.user?.username}
                       </span>
