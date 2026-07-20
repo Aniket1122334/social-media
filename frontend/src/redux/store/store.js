@@ -5,6 +5,7 @@ import usersReducer from "../slices/userSlice";
 import commentsReducer from "../slices/commentSlice";
 import photoReducer from "../slices/externalApiSlice";
 import followReducer from "../slices/followSlice";
+import notificationReducer from "../slices/notificationSlice";
 
 const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ const store = configureStore({
     comments: commentsReducer,
     externalPhotos: photoReducer,
     follow: followReducer,
+    notifications: notificationReducer,
   },
 });
 

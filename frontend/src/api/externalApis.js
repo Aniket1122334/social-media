@@ -15,6 +15,6 @@ export async function fetchPhotos(query, page = 1, per_page = 10) {
     thumbnail: item.urls.small,
     src: item.urls.full,
   }));
-  console.log(result);
+  // console.log(result);
   return result;
 }

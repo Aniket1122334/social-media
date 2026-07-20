@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { login } from "../../services/authService";
+import { socket } from "../../config/socket";
 
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
@@ -39,6 +40,7 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
+      socket.disconnect();
     },
   },
 

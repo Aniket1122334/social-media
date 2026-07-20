@@ -2,7 +2,6 @@ import ProfilePostCard from "./ProfilePostCards";
 
 const ProfileGrid = ({ activeTab, userPosts }) => {
   console.log(userPosts);
-  console.log(userPosts.map((post) => post.postType));
 
   const filteredPosts =
     activeTab === "posts"

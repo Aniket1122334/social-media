@@ -1,4 +1,9 @@
+const { getReceiverSocketId, getIO } = require("../../config/socket");
 const userModel = require("../../models/userModel");
+const {
+  createNotification,
+  deleteNotification,
+} = require("../../utils/notificationHelper");
 
 module.exports.followUser = async (req, res) => {
   // console.log(req);
@@ -45,6 +50,21 @@ module.exports.followUser = async (req, res) => {
 
     await loggedInUser.save();
     await targetUser.save();
+
+    // notification create
+    if (loggedInUserId.toString() !== targetUserId) {
+      const notification = await createNotification({
+        sender: loggedInUserId,
+        receiver: targetUserId,
+        type: "FOLLOW",
+      });
+
+      const receiverSocketId = getReceiverSocketId(targetUserId);
+
+      if (receiverSocketId) {
+        getIO().to(receiverSocketId).emit("newNotification", notification);
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -106,6 +126,15 @@ module.exports.unfollowerUser = async (req, res) => {
     );
 
     await Promise.all([loggedInUser.save(), targetUser.save()]);
+
+    // create notification
+    if (loggedInUserId.toString() !== targetUserId) {
+      await deleteNotification({
+        sender: loggedInUserId,
+        receiver: targetUserId,
+        type: "FOLLOW",
+      });
+    }
 
     return res.status(200).json({
       success: true,

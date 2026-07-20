@@ -15,7 +15,9 @@ const Profile = () => {
   }, [dispatch]);
 
   const userSelector = useSelector((state) => state.users.currentUser);
-  const postSelector = useSelector((state) => state.posts.posts);
+  const postSelector = useSelector(
+    (state) => state.users?.currentUser?.posts || [],
+  );
 
   return (
     <div className="min-h-screen bg-black text-white w-full">

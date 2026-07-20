@@ -1,5 +1,10 @@
 const postModel = require("../../models/postModel");
 const commentModel = require("../../models/commentModel");
+const {
+  createNotification,
+  deleteNotification,
+} = require("../../utils/notificationHelper");
+const { getReceiverSocketId, getIO } = require("../../config/socket");
 
 module.exports.addComment = async (req, res) => {
   try {
@@ -14,8 +19,6 @@ module.exports.addComment = async (req, res) => {
         message: "Comment is required",
       });
     }
-    console.log(typeof postId);
-    console.log(postId);
 
     // check post exists
     const post = await postModel.findById(postId);
@@ -40,6 +43,23 @@ module.exports.addComment = async (req, res) => {
     // Push comment id in post
     post.comments.push(comment._id);
     await post.save();
+
+    // create notification
+    if (post.user.toString() !== userId) {
+      const notification = await createNotification({
+        sender: userId,
+        receiver: post.user,
+        type: "COMMENT",
+        post: post._id,
+        comment: comment._id,
+      });
+
+      // create socket connection
+      const ReceiverSocketId = getReceiverSocketId(post.user.toString());
+      if (ReceiverSocketId) {
+        getIO().to(ReceiverSocketId).emit("newNotification", notification);
+      }
+    }
 
     return res.status(201).json({
       success: true,
@@ -113,7 +133,7 @@ module.exports.deleteComment = async (req, res) => {
     }
 
     // Remove comment id from post
-    await postModel.findByIdAndUpdate(comment.post, {
+    let post = await postModel.findByIdAndUpdate(comment.post, {
       $pull: {
         comments: comment._id,
       },
@@ -121,6 +141,17 @@ module.exports.deleteComment = async (req, res) => {
 
     // delete comment
     await commentModel.findByIdAndDelete(commentId);
+
+    // notification
+    if (post.user.toString() !== userId) {
+      deleteNotification({
+        sender: userId,
+        receiver: post.user,
+        type: "COMMENT",
+        post: post._id,
+        comment: comment._id,
+      });
+    }
 
     return res.status(200).json({
       success: true,

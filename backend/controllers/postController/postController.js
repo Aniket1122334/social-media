@@ -2,8 +2,13 @@ const postModel = require("../../models/postModel");
 const userModel = require("../../models/userModel");
 const uploadToCloudinary = require("../../utils/uploadToCloudinary");
 const {
+  createNotification,
+  deleteNotification,
+} = require("../../utils/notificationHelper");
+const {
   postValidation,
 } = require("../../validation/postValidation/postValidation");
+const { getReceiverSocketId, getIO } = require("../../config/socket");
 
 module.exports.createPost = async (req, res) => {
   // console.log("✅ createPost controller called");
@@ -127,11 +132,42 @@ module.exports.toggleLikes = async (req, res) => {
     // unlike
     if (alreadyLiked) {
       post.likes = post.likes.filter((id) => id.toString() !== userId);
+
+      // notification create
+      if (post.user.toString() !== userId) {
+        await deleteNotification({
+          sender: userId,
+          receiver: post.user,
+          type: "LIKE",
+          post: post._id,
+        });
+      }
     } else {
       // like
       post.likes.push(userId);
 
       // notification create
+      if (post.user.toString() !== userId) {
+        const notification = await createNotification({
+          sender: userId,
+          receiver: post.user,
+          type: "LIKE",
+          post: post._id,
+        });
+
+        await notification.populate(
+          "sender",
+          "username fullname profilePicture",
+        );
+
+        await notification.populate("post", "image");
+
+        const receiverSoketId = getReceiverSocketId(post.user.toString());
+
+        if (receiverSoketId) {
+          getIO().to(receiverSoketId).emit("newNotification", notification);
+        }
+      }
     }
 
     await post.save();

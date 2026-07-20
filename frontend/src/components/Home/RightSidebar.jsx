@@ -14,7 +14,7 @@ const RightSidebar = () => {
 
   const allUsersSelector = useSelector((state) => state.users.allUsers);
   // console.log(allUsersSelector);
-  const currentUser = useSelector((state) => state.users.currentUser);
+  const currentUser = useSelector((state) => state.auth?.user);
 
   const isFollowing = (userId) => {
     return currentUser?.following?.includes(userId);

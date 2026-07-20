@@ -1,6 +1,3 @@
-import { useDispatch } from "react-redux";
-import { follow } from "../../redux/slices/followSlice";
-
 const ProfileHeader = ({
   profileImg,
   fullname,
@@ -10,15 +7,6 @@ const ProfileHeader = ({
   following,
   bio,
 }) => {
-  const dispatch = useDispatch();
-
-  const handleFollowBtn = (type) => {
-    if (type == "follow") {
-      dispatch(follow());
-    } else if (type == "unfollow") {
-    }
-  };
-
   return (
     <div className="flex flex-col md:flex-row items-center md:items-start gap-8 border-b border-zinc-800 pb-10">
       {/* Avatar */}

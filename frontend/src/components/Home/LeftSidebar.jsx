@@ -9,6 +9,7 @@ import {
   RiUser3Line,
   RiMenuLine,
 } from "react-icons/ri";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const menuItems = [
@@ -43,6 +44,15 @@ const menuItems = [
 ];
 
 const LeftSidebar = ({ isMobile = false }) => {
+  const notificationSelector =
+    useSelector((state) => state.notifications.notifications) || [];
+
+  // console.log(notificationSelector);
+
+  const unreadCount = notificationSelector.filter(
+    (notification) => !notification.isRead,
+  ).length;
+
   return (
     <aside
       className={`h-screen ${!isMobile ? "w-72" : "w-25"} bg-[#0f0f0f] border-r border-zinc-800 sticky top-0`}
@@ -62,26 +72,26 @@ const LeftSidebar = ({ isMobile = false }) => {
 
         <nav className="flex-1 space-y-2">
           {menuItems.map((item) => (
-            <Link to={item.link}>
-              {" "}
-              <button
-                key={item.id}
-                className="w-full flex items-center gap-5 px-4 py-4 rounded-xl hover:bg-zinc-900 transition"
-              >
-                <span className="text-white">{item.icon}</span>
+            <Link key={item.id} to={item.link}>
+              <button className="w-full flex items-center gap-5 px-4 py-4 rounded-xl hover:bg-zinc-900 transition">
+                {/* Icon + Notification Badge */}
+                <div className="relative">
+                  <span className="text-white">{item.icon}</span>
 
-                {!isMobile ? (
+                  {item.title === "Notifications" && unreadCount > 0 && (
+                    <span className="absolute -top-2 -right-2 min-w-[20px] h-5 px-1 rounded-full bg-red-500 text-white text-[11px] font-semibold flex items-center justify-center">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </div>
+
+                {!isMobile && (
                   <span className="text-lg text-white">{item.title}</span>
-                ) : (
-                  <span className="text-lg text-white hidden">
-                    {item.title}
-                  </span>
                 )}
               </button>
             </Link>
           ))}
         </nav>
-
         {/* Bottom */}
 
         <button className="flex items-center gap-5 px-4 py-4 rounded-xl hover:bg-zinc-900 transition">

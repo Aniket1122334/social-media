@@ -2,8 +2,10 @@ const { myProfileDTO, searchUserDTO } = require("../../DTO/profileDTO");
 const userModel = require("../../models/userModel");
 const mongoose = require("mongoose");
 
-module.exports.profile = (req, res) => {
+module.exports.profile = async (req, res) => {
   try {
+    await req.user.populate("posts");
+
     return res.status(200).json({
       success: true,
       message: "Profile Fetched Successfully",

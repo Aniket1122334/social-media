@@ -1,12 +1,15 @@
 const dotenv = require("dotenv");
 dotenv.config();
+
+const http = require("http");
 const express = require("express");
 const cors = require("cors");
+
 const connectDb = require("./config/mongoose");
-const app = express();
+const { initializeSocket } = require("./config/socket");
+
 const authMiddleware = require("./middlewares/authMiddleware");
 
-// * routes
 const authRoute = require("./routes/authRoute/authRoute");
 const profileRoute = require("./routes/profileRoute/profileRoute");
 const postRoute = require("./routes/postRoutes/postRoutes");
@@ -14,43 +17,37 @@ const commentRoute = require("./routes/commentRoute/commentRoute");
 const notificationRoute = require("./routes/notificationRoute/notificationRoute");
 const followUserRoute = require("./routes/followerRoute/followerRoute");
 
-// * connect db
+const app = express();
+const server = http.createServer(app);
+
+// Connect DB
 connectDb();
 
-//! middlewares
+// Initialize Socket.IO
+initializeSocket(server);
+
+// Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:5174", "http://localhost:5173"],
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
 
-//routes
-
-// authentication
+// Routes
 app.use("/api/auth", authRoute);
-
-// profile
 app.use("/api/profile", authMiddleware, profileRoute);
-
-// posts
 app.use("/api/post", postRoute);
-
-// comments
 app.use("/api/comments", authMiddleware, commentRoute);
-
-// follower
 app.use("/api/follow", authMiddleware, followUserRoute);
+app.use("/api/notification", authMiddleware, notificationRoute);
 
-// notifications
-// app.use("/api/notification", authMiddleware, notificationRoute);
+const PORT = process.env.PORT || 3000;
 
-const PORT = 3000;
-
-app.listen(PORT, () => {
-  console.log("Everything is working fine");
+server.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });

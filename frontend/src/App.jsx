@@ -13,21 +13,40 @@ import Notifications from "./pages/Notifications/Notifications";
 import Create from "./pages/Create/Create";
 import VerifyOTP from "./pages/Auth/VerifyOTP";
 import { ToastContainer } from "react-toastify";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "./redux/slices/userSlice";
+import NotificationListerner from "./listeners/NotificationListerner";
+import { fetchAllNotifications } from "./redux/slices/notificationSlice";
+import { socket } from "./config/socket";
 
 const App = () => {
   const [isMobile, setSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
 
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
+
+  // Socket Connect
   useEffect(() => {
+    if (!isAuthenticated || !user) return;
+
     const token = localStorage.getItem("token");
 
     if (token) {
       dispatch(fetchUser());
+      dispatch(fetchAllNotifications());
     }
-  }, [dispatch]);
+
+    socket.connect();
+
+    socket.on("connect", () => {
+      socket.emit("addUser", user.id);
+    });
+
+    return () => {
+      socket.off("connect");
+    };
+  }, [isAuthenticated, user, dispatch]);
 
   const location = useLocation();
 
@@ -38,6 +57,7 @@ const App = () => {
 
   return (
     <div className="justify-between flex bg-black">
+      <NotificationListerner />
       {!hideSidebar && (
         <div className="leftSidebar sticky top-0 h-screen">
           <LeftSidebar isMobile={isMobile} />
