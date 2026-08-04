@@ -6,6 +6,8 @@ import commentsReducer from "../slices/commentSlice";
 import photoReducer from "../slices/externalApiSlice";
 import followReducer from "../slices/followSlice";
 import notificationReducer from "../slices/notificationSlice";
+import socketReducer from "../slices/socketSlice";
+import messageReducer from "../slices/messageSlice";
 
 const store = configureStore({
   reducer: {
@@ -16,6 +18,8 @@ const store = configureStore({
     externalPhotos: photoReducer,
     follow: followReducer,
     notifications: notificationReducer,
+    onlineUsers: socketReducer,
+    message: messageReducer,
   },
 });
 

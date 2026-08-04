@@ -15,20 +15,26 @@ import VerifyOTP from "./pages/Auth/VerifyOTP";
 import { ToastContainer } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUser } from "./redux/slices/userSlice";
-import NotificationListerner from "./listeners/NotificationListerner";
+import NotificationListener from "./listeners/NotificationListerner";
+import MessageListener from "./listeners/MessageListener";
 import { fetchAllNotifications } from "./redux/slices/notificationSlice";
-import { socket } from "./config/socket";
+import { useNavigate } from "react-router-dom";
+import SocketListener from "./listeners/SocketListener";
 
 const App = () => {
   const [isMobile, setSidebarOpen] = useState(false);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   // Socket Connect
   useEffect(() => {
-    if (!isAuthenticated || !user) return;
+    if (!isAuthenticated || !user) {
+      navigate("/login");
+      return;
+    }
 
     const token = localStorage.getItem("token");
 
@@ -36,17 +42,7 @@ const App = () => {
       dispatch(fetchUser());
       dispatch(fetchAllNotifications());
     }
-
-    socket.connect();
-
-    socket.on("connect", () => {
-      socket.emit("addUser", user.id);
-    });
-
-    return () => {
-      socket.off("connect");
-    };
-  }, [isAuthenticated, user, dispatch]);
+  }, [isAuthenticated, user, dispatch, navigate]);
 
   const location = useLocation();
 
@@ -57,7 +53,9 @@ const App = () => {
 
   return (
     <div className="justify-between flex bg-black">
-      <NotificationListerner />
+      <NotificationListener />
+      <SocketListener />
+      <MessageListener />
       {!hideSidebar && (
         <div className="leftSidebar sticky top-0 h-screen">
           <LeftSidebar isMobile={isMobile} />

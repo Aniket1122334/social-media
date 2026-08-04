@@ -1,32 +1,96 @@
-const ChatItem = ({ chat }) => {
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearMessages,
+  fetchMessages,
+  setSelectedUser,
+  clearUnread,
+} from "../../redux/slices/messageSlice";
+
+const ChatItem = ({ user, online }) => {
+  const dispatch = useDispatch();
+
+  const selectedUser = useSelector((state) => state.message.selectedUser);
+
+  const unreadMessages = useSelector((state) => state.message.unreadMessages);
+
+  const unread = unreadMessages?.[user._id] || 0;
+
+  const isSelected = selectedUser?._id === user._id;
+
+  const handleClickOnMessage = () => {
+    dispatch(setSelectedUser(user));
+
+    dispatch(clearUnread(user._id));
+
+    dispatch(clearMessages());
+
+    dispatch(fetchMessages(user._id));
+  };
+
   return (
-    <div className="flex items-center justify-between px-5 py-4 cursor-pointer hover:bg-[#1A1A1A] transition">
+    <div
+      onClick={handleClickOnMessage}
+      className={`flex items-center justify-between px-5 py-4 cursor-pointer transition-all duration-200
+      ${isSelected ? "bg-zinc-800" : "hover:bg-[#1A1A1A]"}`}
+    >
+      {/* Left */}
       <div className="flex items-center gap-4">
-        <div className="relative">
+        <div className="relative flex-shrink-0">
           <img
-            src={chat.avatar}
-            alt={chat.name}
+            src={
+              user.profilePicture ||
+              "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg"
+            }
+            alt={user.fullname}
             className="w-14 h-14 rounded-full object-cover"
           />
 
-          {chat.online && (
-            <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-[#111]" />
+          {online && (
+            <span
+              className="
+              absolute
+              bottom-0
+              right-0
+              w-3.5
+              h-3.5
+              rounded-full
+              bg-green-500
+              border-2
+              border-[#111]
+              shadow-[0_0_8px_#22c55e]
+              "
+            />
           )}
         </div>
 
-        <div>
-          <h3 className="font-semibold">{chat.name}</h3>
+        <div className="min-w-0">
+          <h3 className="font-semibold text-white truncate">{user.fullname}</h3>
 
-          <p className="text-sm text-zinc-400 truncate w-40">{chat.message}</p>
+          <p className="text-sm text-zinc-400 truncate w-44">
+            {online ? "Active now" : "Offline"}
+          </p>
         </div>
       </div>
 
+      {/* Right */}
       <div className="flex flex-col items-end gap-2">
-        <span className="text-xs text-zinc-500">{chat.time}</span>
-
-        {chat.unread > 0 && (
-          <span className="bg-violet-600 text-xs w-5 h-5 rounded-full flex items-center justify-center">
-            {chat.unread}
+        {unread > 0 && (
+          <span
+            className="
+            min-w-6
+            h-6
+            px-2
+            rounded-full
+            bg-violet-600
+            text-white
+            text-xs
+            flex
+            items-center
+            justify-center
+            font-semibold
+            "
+          >
+            {unread}
           </span>
         )}
       </div>

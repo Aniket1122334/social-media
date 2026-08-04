@@ -1,50 +1,13 @@
 import { Search } from "lucide-react";
 import ChatItem from "./ChatItem";
+import { useSelector } from "react-redux";
 
-const chats = [
-  {
-    id: 1,
-    name: "Rahul Sharma",
-    message: "Hey! How are you?",
-    time: "2m",
-    online: true,
-    unread: 2,
-    avatar: "https://i.pravatar.cc/150?img=1",
-  },
-  {
-    id: 2,
-    name: "Priya",
-    message: "Let's meet tomorrow.",
-    time: "10m",
-    online: false,
-    unread: 0,
-    avatar: "https://i.pravatar.cc/150?img=5",
-  },
-  {
-    id: 3,
-    name: "Aman",
-    message: "Sent a photo 📷",
-    time: "30m",
-    online: true,
-    unread: 1,
-    avatar: "https://i.pravatar.cc/150?img=8",
-  },
-  {
-    id: 4,
-    name: "Rohit",
-    message: "Typing...",
-    time: "1h",
-    online: false,
-    unread: 0,
-    avatar: "https://i.pravatar.cc/150?img=10",
-  },
-];
+const ChatList = ({ followingUsers = [] }) => {
+  const onlineUsers = useSelector((state) => state?.onlineUsers.onlineUsers);
 
-const ChatList = () => {
   return (
     <div className="h-full bg-[#111] text-white flex flex-col">
       {/* Header */}
-
       <div className="p-5 border-b border-zinc-800">
         <h2 className="text-2xl font-semibold">Messages</h2>
 
@@ -63,11 +26,22 @@ const ChatList = () => {
       </div>
 
       {/* Chat List */}
-
       <div className="flex-1 overflow-y-auto">
-        {chats.map((chat) => (
-          <ChatItem key={chat.id} chat={chat} />
-        ))}
+        {followingUsers.length === 0 ? (
+          <div className="h-full flex items-center justify-center px-6">
+            <p className="text-zinc-500 text-center text-sm">
+              No messages available
+            </p>
+          </div>
+        ) : (
+          followingUsers?.map((user) => (
+            <ChatItem
+              key={user._id}
+              user={user}
+              online={onlineUsers.includes(user._id)}
+            />
+          ))
+        )}
       </div>
     </div>
   );

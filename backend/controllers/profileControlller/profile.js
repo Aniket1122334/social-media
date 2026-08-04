@@ -4,7 +4,19 @@ const mongoose = require("mongoose");
 
 module.exports.profile = async (req, res) => {
   try {
-    await req.user.populate("posts");
+    await req.user.populate([
+      {
+        path: "posts",
+      },
+      {
+        path: "followers",
+        select: "username fullname profilePicture",
+      },
+      {
+        path: "following",
+        select: "username fullname profilePicture",
+      },
+    ]);
 
     return res.status(200).json({
       success: true,

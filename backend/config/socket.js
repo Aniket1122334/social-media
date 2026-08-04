@@ -1,4 +1,5 @@
 const { Server } = require("socket.io");
+const messageModel = require("../models/messageModel");
 
 let io;
 const onlineUsers = new Map();
@@ -17,7 +18,7 @@ const initializeSocket = (server) => {
     socket.on("addUser", (userId) => {
       onlineUsers.set(userId, socket.id);
 
-      console.log("online Users", onlineUsers);
+      io.emit("getOnlineUsers", [...onlineUsers.keys()]);
     });
 
     socket.on("disconnect", () => {
@@ -27,7 +28,7 @@ const initializeSocket = (server) => {
           break;
         }
       }
-
+      io.emit("getOnlineUsers", [...onlineUsers.keys()]);
       console.log("User Disconnected:", socket.id);
     });
   });

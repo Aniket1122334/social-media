@@ -16,13 +16,11 @@ export const getComments = async (postId) => {
 export const updateComments = async (commentId, text) => {
   const response = await api.put(`/comments/${commentId}`, text);
 
-  console.log(response);
   return response;
 };
 
 export const deleteComment = async (commentId) => {
   const response = await api.delete(`/comments/${commentId}`);
 
-  console.log(response);
   return response.data;
 };

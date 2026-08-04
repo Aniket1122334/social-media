@@ -2,19 +2,32 @@ import { useEffect, useState } from "react";
 import ProfileGrid from "../../components/Profile/ProfileGrid";
 import ProfileHeader from "../../components/Profile/ProfileHeader";
 import ProfileTabs from "../../components/Profile/ProfileTabs";
+import PostModal from "../../components/PostModal/PostModal";
 
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../../redux/slices/postSlice";
+import { fetchComments } from "../../redux/slices/commentSlice";
 
 const Profile = () => {
   const [activeTab, setActiveTab] = useState("posts");
+  const [selectedPost, setSelectedPost] = useState(null);
 
   const dispatch = useDispatch();
+
+  // Sirf ek baar posts fetch karo
   useEffect(() => {
     dispatch(fetchPosts());
   }, [dispatch]);
 
+  // Modal open hone par comments fetch karo
+  useEffect(() => {
+    if (selectedPost?._id) {
+      dispatch(fetchComments(selectedPost._id));
+    }
+  }, [dispatch, selectedPost]);
+
   const userSelector = useSelector((state) => state.users.currentUser);
+
   const postSelector = useSelector(
     (state) => state.users?.currentUser?.posts || [],
   );
@@ -34,8 +47,20 @@ const Profile = () => {
 
         <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <ProfileGrid activeTab={activeTab} userPosts={postSelector} />
+        <ProfileGrid
+          activeTab={activeTab}
+          userPosts={postSelector}
+          setSelectedPost={setSelectedPost}
+        />
       </div>
+
+      {selectedPost && (
+        <PostModal
+          user={userSelector}
+          post={selectedPost}
+          onClose={() => setSelectedPost(null)}
+        />
+      )}
     </div>
   );
 };

@@ -1,6 +1,5 @@
 import { IoClose } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
-import { FaRegHeart } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
@@ -25,22 +24,30 @@ const Comments = ({ postId, setSelectedPostId }) => {
 
   const commentSelector = useSelector((state) => state?.comments?.comments);
   const userSelector = useSelector((state) => state.auth.user);
+  console.log(userSelector);
 
   const handleComment = async () => {
-    const result = await dispatch(
-      createComment({ postId, text: comment.current.value }),
-    );
+    const text = comment.current.value.trim();
 
-    // console.log(result.payload.success);
+    if (!text) return;
+
+    const result = await dispatch(createComment({ postId, text }));
 
     if (result.payload.success) {
       toast.success("Comment added successfully!");
-
       dispatch(addCommentCount(result.payload));
-
       comment.current.value = "";
-
       setSelectedPostId(null);
+    }
+  };
+
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+
+      if (comment.current.value.trim()) {
+        handleComment();
+      }
     }
   };
 
@@ -82,7 +89,7 @@ const Comments = ({ postId, setSelectedPostId }) => {
                   <img
                     src={
                       comment?.user?.profilePicture ||
-                      "https://i.pravatar.cc/150?img=20"
+                      "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg"
                     }
                     alt={comment.user?.username}
                     className="w-10 h-10 rounded-full object-cover"
@@ -108,8 +115,6 @@ const Comments = ({ postId, setSelectedPostId }) => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <FaRegHeart className="text-gray-400 mt-2 cursor-pointer hover:text-red-500 transition" />
-
                   {String(userSelector?.id) === String(comment.user?._id) && (
                     <MdDeleteOutline
                       onClick={() => handleDeleteComment(comment._id)}
@@ -137,7 +142,10 @@ const Comments = ({ postId, setSelectedPostId }) => {
 
         <div className="border-t border-zinc-800 p-3 flex items-center gap-3">
           <img
-            src="https://i.pravatar.cc/150?img=20"
+            src={
+              userSelector?.profilePicture ||
+              "https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-image-182145777.jpg"
+            }
             className="w-9 h-9 rounded-full"
           />
 
@@ -145,6 +153,7 @@ const Comments = ({ postId, setSelectedPostId }) => {
             placeholder="Add a comment..."
             className="flex-1 bg-transparent text-white outline-none"
             ref={comment}
+            onKeyDown={handleEnter}
           />
 
           <button

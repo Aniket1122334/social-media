@@ -16,6 +16,7 @@ const postRoute = require("./routes/postRoutes/postRoutes");
 const commentRoute = require("./routes/commentRoute/commentRoute");
 const notificationRoute = require("./routes/notificationRoute/notificationRoute");
 const followUserRoute = require("./routes/followerRoute/followerRoute");
+const messageRoute = require("./routes/messageRoute/messageRoute");
 
 const app = express();
 const server = http.createServer(app);
@@ -45,6 +46,7 @@ app.use("/api/post", postRoute);
 app.use("/api/comments", authMiddleware, commentRoute);
 app.use("/api/follow", authMiddleware, followUserRoute);
 app.use("/api/notification", authMiddleware, notificationRoute);
+app.use("/api/message", authMiddleware, messageRoute);
 
 const PORT = process.env.PORT || 3000;
 
