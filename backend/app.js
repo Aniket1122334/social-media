@@ -32,13 +32,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["social-media-git-main-aniket1122334s-projects.vercel.app" , "social-media-rczk4az7r-aniket1122334s-projects.vercel.app"],
+    origin: [
+      "https://social-media-git-main-aniket1122334s-projects.vercel.app",
+      "https://social-media-rczk4az7r-aniket1122334s-projects.vercel.app",
+      "http://localhost:5173",
+    ],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-
 // Routes
 app.use("/api/auth", authRoute);
 app.use("/api/profile", authMiddleware, profileRoute);

@@ -8,8 +8,9 @@ const initializeSocket = (server) => {
   io = new Server(server, {
     cors: {
       origin: [
-        "social-media-git-main-aniket1122334s-projects.vercel.app",
-        "social-media-rczk4az7r-aniket1122334s-projects.vercel.app",
+        "https://social-media-git-main-aniket1122334s-projects.vercel.app",
+        "https://social-media-rczk4az7r-aniket1122334s-projects.vercel.app",
+        "http://localhost:5173",
       ],
       credentials: true,
     },
