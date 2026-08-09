@@ -102,8 +102,6 @@ module.exports.signup = async (req, res) => {
       await otpRecord.save();
     }
 
-    console.log(otp);
-
     // * send otp to email function
     const smsResult = await sendOTP(email, otp);
 
