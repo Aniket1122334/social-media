@@ -30,13 +30,21 @@ initializeSocket(server);
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const allowedOrigins = [
+  "https://social-media-git-main-aniket1122334s-projects.vercel.app",
+  "https://social-media-rczk4az7r-aniket1122334s-projects.vercel.app",
+  "http://localhost:5173",
+];
+
 app.use(
   cors({
-    origin: [
-      "https://social-media-git-main-aniket1122334s-projects.vercel.app",
-      "https://social-media-rczk4az7r-aniket1122334s-projects.vercel.app",
-      "http://localhost:5173",
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
