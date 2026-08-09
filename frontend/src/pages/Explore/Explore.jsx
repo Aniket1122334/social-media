@@ -3,12 +3,47 @@ import ExploreGrid from "../../components/Explore/ExploreGrid";
 
 const Explore = () => {
   return (
-    <div className="min-h-screen w-full bg-black text-white">
-      <div className="max-w-[90%] mx-auto px-3 sm:px-5 lg:px-8 py-6">
-        <ExploreHeader />
+    <div className="min-h-screen bg-black text-white">
+      {/* =====================================================
+          MAIN CONTENT
+      ====================================================== */}
 
-        <ExploreGrid />
-      </div>
+      <main
+        className="
+          ml-20
+          min-h-screen
+          px-4
+          sm:px-6
+          md:px-8
+          lg:px-0
+          py-6
+        "
+      >
+        <div
+          className="
+            mx-auto
+            w-full
+            lg:w-[70vw]
+            min-h-screen
+          "
+        >
+          {/* =================================================
+              EXPLORE HEADER
+          ================================================= */}
+
+          <div className="w-full mb-6">
+            <ExploreHeader />
+          </div>
+
+          {/* =================================================
+              EXPLORE GRID
+          ================================================= */}
+
+          <div className="w-full">
+            <ExploreGrid />
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const ProfileHeader = ({
   profileImg,
   fullname,
@@ -32,19 +34,14 @@ const ProfileHeader = ({
           <h1 className="text-3xl font-semibold">{fullname}</h1>
 
           <div className="flex justify-center md:justify-start gap-3 flex-wrap">
-            <button
-              className="bg-white text-black px-5 py-2 rounded-lg
+            <Link to="/edit">
+              <button
+                className="bg-white text-black px-5 py-2 rounded-lg
               font-medium hover:bg-gray-200 transition"
-            >
-              Edit Profile
-            </button>
-
-            <button
-              className="bg-zinc-800 px-5 py-2 rounded-lg
-              hover:bg-zinc-700 transition"
-            >
-              Share Profile
-            </button>
+              >
+                Edit Profile
+              </button>
+            </Link>
           </div>
         </div>
 

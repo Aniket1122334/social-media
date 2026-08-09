@@ -1,14 +1,27 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { allUsers, myProfile } from "../../services/profileService";
+import {
+  allUsers,
+  myProfile,
+  editProfile,
+} from "../../services/profileService";
 import { follow, unfollow } from "./followSlice";
 
-export const fetchUser = createAsyncThunk("users/fetchUsers", async () => {
-  try {
-    return await myProfile();
-  } catch (err) {
-    return err;
-  }
-});
+// ================= Fetch Current User =================
+
+export const fetchUser = createAsyncThunk(
+  "users/fetchUser",
+  async (_, thunkAPI) => {
+    try {
+      return await myProfile();
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to fetch profile.",
+      );
+    }
+  },
+);
+
+// ================= Fetch Suggested Users =================
 
 export const fetchAllUsers = createAsyncThunk(
   "users/fetchAllUsers",
@@ -23,11 +36,26 @@ export const fetchAllUsers = createAsyncThunk(
   },
 );
 
+// ================= Edit Profile =================
+
+export const updateProfile = createAsyncThunk(
+  "users/updateProfile",
+  async (formData, thunkAPI) => {
+    try {
+      return await editProfile(formData);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || "Failed to update profile.",
+      );
+    }
+  },
+);
+
 const initialState = {
   currentUser: null,
   profileUser: null,
-  loading: false,
   allUsers: [],
+  loading: false,
   error: null,
 };
 
@@ -45,7 +73,8 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder
 
-      // Current User
+      // ================= Fetch Current User =================
+
       .addCase(fetchUser.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -61,17 +90,48 @@ const userSlice = createSlice({
         state.error = action.payload;
       })
 
-      .addCase(follow.fulfilled, (state, action) => {
-        state.currentUser.following.push(action.payload.followingId);
+      // ================= Update Profile =================
+
+      .addCase(updateProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
       })
+
+      .addCase(updateProfile.fulfilled, (state, action) => {
+        state.loading = false;
+
+        state.currentUser = action.payload.user;
+
+        if (state.profileUser) {
+          state.profileUser = action.payload.user;
+        }
+      })
+
+      .addCase(updateProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      // ================= Follow =================
+
+      .addCase(follow.fulfilled, (state, action) => {
+        if (state.currentUser) {
+          state.currentUser.following.push(action.payload.followingId);
+        }
+      })
+
+      // ================= Unfollow =================
 
       .addCase(unfollow.fulfilled, (state, action) => {
-        state.currentUser.following = state.currentUser.following.filter(
-          (id) => id !== action.payload.unfollowingId,
-        );
+        if (state.currentUser) {
+          state.currentUser.following = state.currentUser.following.filter(
+            (id) => id !== action.payload.unfollowingId,
+          );
+        }
       })
 
-      // All Users
+      // ================= Fetch Suggested Users =================
+
       .addCase(fetchAllUsers.pending, (state) => {
         state.loading = true;
         state.error = null;

@@ -17,3 +17,13 @@ export const allUsers = async () => {
   // console.log(response.data.users);
   return response.data;
 };
+
+export const editProfile = async (formData) => {
+  const response = await api.put("/profile/edit-profile", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data;
+};

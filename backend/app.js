@@ -42,7 +42,7 @@ app.use(
 // Routes
 app.use("/api/auth", authRoute);
 app.use("/api/profile", authMiddleware, profileRoute);
-app.use("/api/post", postRoute);
+app.use("/api/post", authMiddleware, postRoute);
 app.use("/api/comments", authMiddleware, commentRoute);
 app.use("/api/follow", authMiddleware, followUserRoute);
 app.use("/api/notification", authMiddleware, notificationRoute);

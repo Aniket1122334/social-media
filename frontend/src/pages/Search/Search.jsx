@@ -28,14 +28,62 @@ const Search = () => {
   }, [query]);
 
   return (
-    <div className="min-h-screen bg-black text-white w-full">
-      <div className="max-w-[90%] mx-auto px-4 md:px-8 py-6">
-        <SearchBar query={query} setQuery={setQuery} />
+    <div className="min-h-screen bg-black text-white">
+      {/* =====================================================
+          MAIN SEARCH CONTENT
+      ====================================================== */}
 
-        <SearchHistory data={searchResult} />
+      <main
+        className="
+          ml-20
+          min-h-screen
+          px-4
+          sm:px-6
+          md:px-8
+          lg:px-0
+          py-6
+        "
+      >
+        <div
+          className="
+            mx-auto
+            w-full
+            lg:w-[70vw]
+            min-h-screen
+          "
+        >
+          {/* =================================================
+              SEARCH BAR
+          ================================================= */}
 
-        <SearchGrid data={searchResult} />
-      </div>
+          <div
+            className="
+              w-full
+              max-w-2xl
+              mx-auto
+              mb-8
+            "
+          >
+            <SearchBar query={query} setQuery={setQuery} />
+          </div>
+
+          {/* =================================================
+              SEARCH HISTORY / RESULTS
+          ================================================= */}
+
+          <div className="w-full">
+            <SearchHistory data={searchResult} />
+          </div>
+
+          {/* =================================================
+              SEARCH GRID
+          ================================================= */}
+
+          <div className="w-full mt-6">
+            <SearchGrid data={searchResult} />
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

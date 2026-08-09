@@ -23,7 +23,23 @@ const ProfileGrid = ({ activeTab, userPosts, setSelectedPost }) => {
   }
 
   return (
-    <div className="mt-8 grid grid-cols-3 gap-1 sm:gap-2 md:gap-4">
+    <div
+      className="
+        mt-6
+        sm:mt-8
+
+        grid
+
+        grid-cols-2
+        sm:grid-cols-3
+        lg:grid-cols-4
+
+        gap-1
+        sm:gap-2
+        md:gap-3
+        lg:gap-4
+      "
+    >
       {filteredPosts.map((post) => (
         <ProfilePostCard
           key={post._id}

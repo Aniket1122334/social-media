@@ -34,25 +34,110 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-black text-white w-full">
-      <div className="max-w-6xl mx-auto px-4 md:px-8 py-8">
-        <ProfileHeader
-          profileImg={userSelector?.profilePicture}
-          fullname={userSelector?.fullname}
-          username={userSelector?.username}
-          posts={userSelector?.posts}
-          followers={userSelector?.followers}
-          following={userSelector?.following}
-          bio={userSelector?.bio}
-        />
+      {/* =====================================================
+          MAIN CONTENT
+      ====================================================== */}
 
-        <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+      <main
+        className="
+          ml-20
 
-        <ProfileGrid
-          activeTab={activeTab}
-          userPosts={postSelector}
-          setSelectedPost={setSelectedPost}
-        />
-      </div>
+          min-h-screen
+          w-[calc(100vw-5rem)]
+
+          px-3
+          sm:px-5
+          md:px-8
+          lg:px-0
+
+          py-5
+          sm:py-6
+          md:py-8
+
+          overflow-x-hidden
+        "
+      >
+        {/* =====================================================
+            PROFILE CONTAINER
+        ====================================================== */}
+
+        <div
+          className="
+            mx-auto
+            w-full
+
+            lg:w-[80vw]
+
+            max-w-350
+
+            min-h-screen
+          "
+        >
+          {/* =================================================
+              PROFILE HEADER
+          ================================================= */}
+
+          <div
+            className="
+              w-full
+              overflow-hidden
+            "
+          >
+            <ProfileHeader
+              profileImg={userSelector?.profilePicture}
+              fullname={userSelector?.fullname}
+              username={userSelector?.username}
+              posts={userSelector?.posts}
+              followers={userSelector?.followers}
+              following={userSelector?.following}
+              bio={userSelector?.bio}
+            />
+          </div>
+
+          {/* =================================================
+              PROFILE TABS
+          ================================================= */}
+
+          <div
+            className="
+              w-full
+              mt-5
+              sm:mt-6
+              md:mt-8
+
+              overflow-x-auto
+              scrollbar-hide
+            "
+          >
+            <div className="min-w-max">
+              <ProfileTabs activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
+          </div>
+
+          {/* =================================================
+              PROFILE GRID
+          ================================================= */}
+
+          <div
+            className="
+              w-full
+              mt-5
+              sm:mt-6
+              md:mt-8
+            "
+          >
+            <ProfileGrid
+              activeTab={activeTab}
+              userPosts={postSelector}
+              setSelectedPost={setSelectedPost}
+            />
+          </div>
+        </div>
+      </main>
+
+      {/* =====================================================
+          POST MODAL
+      ====================================================== */}
 
       {selectedPost && (
         <PostModal

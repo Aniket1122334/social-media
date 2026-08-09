@@ -13,7 +13,10 @@ const ProfilePostCard = ({ post, onClick }) => {
   const handleMouseLeave = () => {
     if (post.postType === "reel") {
       videoRef.current?.pause();
-      videoRef.current.currentTime = 0;
+
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+      }
     }
   };
 
@@ -22,9 +25,27 @@ const ProfilePostCard = ({ post, onClick }) => {
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="relative group cursor-pointer overflow-hidden rounded-md bg-black select-none"
+      className="
+        group
+        relative
+
+        w-full
+        aspect-square
+
+        overflow-hidden
+
+        bg-zinc-900
+
+        cursor-pointer
+
+        rounded-none
+
+        sm:rounded-sm
+      "
     >
-      {/* Media */}
+      {/* =====================================================
+          MEDIA
+      ====================================================== */}
 
       {post.postType === "reel" ? (
         <video
@@ -34,54 +55,183 @@ const ProfilePostCard = ({ post, onClick }) => {
           playsInline
           loop
           preload="metadata"
-          className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
+          className="
+            block
+
+            w-full
+            h-full
+
+            object-cover
+
+            transition-transform
+            duration-500
+
+            md:group-hover:scale-110
+          "
         />
       ) : (
         <img
           src={post.media}
           alt="post"
           loading="lazy"
-          className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
+          className="
+            block
+
+            w-full
+            h-full
+
+            object-cover
+
+            transition-transform
+            duration-500
+
+            md:group-hover:scale-110
+          "
         />
       )}
 
-      {/* Reel Badge */}
+      {/* =====================================================
+          REEL BADGE
+      ====================================================== */}
 
       {post.postType === "reel" && (
-        <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-sm p-2 rounded-full">
-          <FaPlay className="text-white text-xs" />
+        <div
+          className="
+            absolute
+            top-2
+            right-2
+
+            sm:top-3
+            sm:right-3
+
+            bg-black/60
+            backdrop-blur-sm
+
+            p-1.5
+            sm:p-2
+
+            rounded-full
+
+            z-10
+          "
+        >
+          <FaPlay
+            className="
+              text-white
+              text-[9px]
+              sm:text-xs
+            "
+          />
         </div>
       )}
 
-      {/* Hover Overlay */}
+      {/* =====================================================
+          HOVER OVERLAY - DESKTOP
+      ====================================================== */}
 
       <div
         className="
           absolute
           inset-0
+
           bg-black/55
+
           opacity-0
-          group-hover:opacity-100
-          transition-opacity
-          duration-300
-          hidden
+
           md:flex
+
+          hidden
+
           items-center
           justify-center
-          gap-10
+
+          gap-6
+          lg:gap-10
+
           pointer-events-none
+
+          transition-opacity
+          duration-300
+
+          md:group-hover:opacity-100
         "
       >
-        <div className="flex items-center gap-2 text-white font-semibold text-lg">
-          <FaHeart className="text-xl" />
+        {/* Likes */}
+
+        <div
+          className="
+            flex
+            items-center
+            gap-2
+
+            text-white
+            font-semibold
+
+            text-sm
+            lg:text-lg
+          "
+        >
+          <FaHeart className="text-base lg:text-xl" />
+
           <span>{post.likes?.length || 0}</span>
         </div>
 
-        <div className="flex items-center gap-2 text-white font-semibold text-lg">
-          <FaComment className="text-xl" />
+        {/* Comments */}
+
+        <div
+          className="
+            flex
+            items-center
+            gap-2
+
+            text-white
+            font-semibold
+
+            text-sm
+            lg:text-lg
+          "
+        >
+          <FaComment className="text-base lg:text-xl" />
+
           <span>{post.comments?.length || 0}</span>
         </div>
       </div>
+
+      {/* =====================================================
+          MOBILE REEL INDICATOR
+      ====================================================== */}
+
+      {post.postType === "reel" && (
+        <div
+          className="
+            md:hidden
+
+            absolute
+            bottom-2
+            left-2
+
+            flex
+            items-center
+            gap-1
+
+            bg-black/60
+            backdrop-blur-sm
+
+            px-2
+            py-1
+
+            rounded-md
+
+            text-white
+
+            text-[10px]
+          "
+        >
+          <FaPlay size={8} />
+
+          <span>Reel</span>
+        </div>
+      )}
     </div>
   );
 };

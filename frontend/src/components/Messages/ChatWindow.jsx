@@ -1,12 +1,4 @@
-import {
-  Phone,
-  Video,
-  MoreVertical,
-  Smile,
-  Paperclip,
-  Send,
-  MessageCircle,
-} from "lucide-react";
+import { Smile, Send, MessageCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addMessage } from "../../redux/slices/messageSlice";
@@ -151,58 +143,6 @@ const ChatWindow = () => {
             </p>
           </div>
         </div>
-
-        {/* Right */}
-
-        <div className="flex items-center gap-2">
-          <button
-            className="
-      w-10
-      h-10
-      rounded-full
-      bg-zinc-800
-      hover:bg-violet-600
-      transition
-      flex
-      items-center
-      justify-center
-      "
-          >
-            <Phone size={18} className="text-white" />
-          </button>
-
-          <button
-            className="
-      w-10
-      h-10
-      rounded-full
-      bg-zinc-800
-      hover:bg-violet-600
-      transition
-      flex
-      items-center
-      justify-center
-      "
-          >
-            <Video size={18} className="text-white" />
-          </button>
-
-          <button
-            className="
-      w-10
-      h-10
-      rounded-full
-      bg-zinc-800
-      hover:bg-violet-600
-      transition
-      flex
-      items-center
-      justify-center
-      "
-          >
-            <MoreVertical size={18} className="text-white" />
-          </button>
-        </div>
       </div>
 
       {/* Messages */}
@@ -267,8 +207,6 @@ const ChatWindow = () => {
               placeholder="Type a message..."
               className="flex-1 bg-transparent px-4 outline-none text-white"
             />
-
-            <Paperclip className="text-zinc-400 cursor-pointer mr-4 hover:text-white transition" />
 
             <button
               onClick={handleSendMessage}

@@ -1,4 +1,3 @@
-import ReelActions from "./ReelAction";
 import ReelInfo from "./ReelInfo";
 
 const ReelCard = ({ reel }) => {
@@ -20,12 +19,6 @@ const ReelCard = ({ reel }) => {
 
       <div className="absolute bottom-8 left-4">
         <ReelInfo />
-      </div>
-
-      {/* Actions */}
-
-      <div className="absolute right-4 bottom-10">
-        <ReelActions />
       </div>
     </div>
   );

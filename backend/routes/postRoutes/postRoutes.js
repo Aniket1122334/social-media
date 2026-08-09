@@ -9,11 +9,11 @@ const {
 const authMiddleware = require("../../middlewares/authMiddleware");
 const router = express.Router();
 
-router.post("/create-post", authMiddleware, upload.single("media"), createPost);
+router.post("/create-post", upload.single("media"), createPost);
 
-router.get("/all-posts", authMiddleware, allPosts);
+router.get("/all-posts", allPosts);
 
-router.get("/:id", authMiddleware, singlePost);
+router.get("/:id", singlePost);
 
-router.patch("/:postId/like", authMiddleware, toggleLikes);
+router.patch("/:postId/like", toggleLikes);
 module.exports = router;

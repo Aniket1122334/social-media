@@ -40,7 +40,14 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
+
       socket.disconnect();
+    },
+
+    updateAuthUser: (state, action) => {
+      state.user = action.payload;
+
+      localStorage.setItem("user", JSON.stringify(action.payload));
     },
   },
 
@@ -74,6 +81,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
-
+export const { logout, updateAuthUser } = authSlice.actions;
 export default authSlice.reducer;

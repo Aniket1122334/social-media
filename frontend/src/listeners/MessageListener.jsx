@@ -12,7 +12,7 @@ const MessageListener = () => {
 
   const selectedUser = useSelector((state) => state.message.selectedUser);
 
-  const authUser = useSelector((state) => state.auth.user.id);
+  const authUser = useSelector((state) => state?.auth?.user?.id);
 
   useEffect(() => {
     const handleNewMessage = (message) => {
