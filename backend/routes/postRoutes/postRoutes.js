@@ -6,7 +6,6 @@ const {
   singlePost,
   toggleLikes,
 } = require("../../controllers/postController/postController");
-const authMiddleware = require("../../middlewares/authMiddleware");
 const router = express.Router();
 
 router.post("/create-post", upload.single("media"), createPost);
