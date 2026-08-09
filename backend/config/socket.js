@@ -7,7 +7,10 @@ const onlineUsers = new Map();
 const initializeSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: ["http://localhost:5173", "http://localhost:5174"],
+      origin: [
+        "social-media-git-main-aniket1122334s-projects.vercel.app",
+        "social-media-rczk4az7r-aniket1122334s-projects.vercel.app",
+      ],
       credentials: true,
     },
   });
