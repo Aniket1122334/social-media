@@ -1,6 +1,4 @@
 import { FaRegHeart, FaRegComment, FaHeart } from "react-icons/fa";
-import { FiSend } from "react-icons/fi";
-import { BsBookmark } from "react-icons/bs";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { toggleLiked } from "../../redux/slices/postSlice";
@@ -102,11 +100,7 @@ const PostCard = ({ post, currentUserId, setSelectedPostId }) => {
             onClick={() => setSelectedPostId(post._id)}
             className="text-white text-2xl cursor-pointer hover:text-gray-300 transition"
           />
-
-          <FiSend className="text-white text-2xl cursor-pointer hover:text-gray-300 transition" />
         </div>
-
-        <BsBookmark className="text-white text-2xl cursor-pointer hover:text-yellow-400 transition" />
       </div>
 
       {/* Likes */}

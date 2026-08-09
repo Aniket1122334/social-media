@@ -1,8 +1,6 @@
 import { IoClose } from "react-icons/io5";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { MdDeleteOutline } from "react-icons/md";
-import { FiSend } from "react-icons/fi";
-import { BsBookmark } from "react-icons/bs";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useRef } from "react";
@@ -18,14 +16,54 @@ import { toast } from "react-toastify";
 import {
   addCommentCount,
   deleteCommentCount,
+  toggleLiked,
 } from "../../redux/slices/postSlice";
 
 const PostModal = ({ post, onClose, user }) => {
   const dispatch = useDispatch();
 
+  // =====================================================
+  // Get comments
+  // =====================================================
+
   const comments = useSelector((state) => state.comments.comments);
 
+  // =====================================================
+  // IMPORTANT:
+  // Get latest post from Redux
+  // =====================================================
+
+  const currentPost = useSelector((state) =>
+    state.posts.posts.find((item) => String(item._id) === String(post._id)),
+  );
+
+  // Redux wala latest post available hai to use karo
+  // otherwise props wala post use karo
+  const updatedPost = currentPost || post;
+
   const commentRef = useRef();
+
+  // =====================================================
+  // Check Like
+  // =====================================================
+
+  const currentUserId = user?._id || user?.id;
+
+  const isLiked = updatedPost?.likes?.some(
+    (id) => String(id) === String(currentUserId),
+  );
+
+  // =====================================================
+  // Like / Unlike
+  // =====================================================
+
+  const handleLike = async () => {
+    try {
+      await dispatch(toggleLiked(updatedPost._id));
+    } catch (error) {
+      console.error("Something went wrong", error);
+    }
+  };
 
   // =====================================================
   // Add Comment
@@ -38,7 +76,7 @@ const PostModal = ({ post, onClose, user }) => {
 
     const result = await dispatch(
       createComment({
-        postId: post._id,
+        postId: updatedPost._id,
         text,
       }),
     );
@@ -48,7 +86,7 @@ const PostModal = ({ post, onClose, user }) => {
 
       dispatch(addCommentCount(result.payload));
 
-      dispatch(fetchComments(post._id));
+      dispatch(fetchComments(updatedPost._id));
 
       commentRef.current.value = "";
     } else {
@@ -77,12 +115,12 @@ const PostModal = ({ post, onClose, user }) => {
     if (result.meta.requestStatus === "fulfilled") {
       dispatch(
         deleteCommentCount({
-          postId: post._id,
+          postId: updatedPost._id,
           commentId,
         }),
       );
 
-      dispatch(fetchComments(post._id));
+      dispatch(fetchComments(updatedPost._id));
 
       toast.success("Comment deleted successfully!");
     } else {
@@ -96,14 +134,11 @@ const PostModal = ({ post, onClose, user }) => {
         fixed
         inset-0
         z-99999
-
         bg-black/80
         backdrop-blur-sm
-
         flex
         items-center
         justify-center
-
         p-0
         sm:p-4
         md:p-6
@@ -116,33 +151,22 @@ const PostModal = ({ post, onClose, user }) => {
       <div
         className="
           relative
-
           w-full
           h-full
-
           sm:w-[95vw]
           sm:h-[90vh]
-
           md:w-[90vw]
-          `md:max-w-300
-
+          md:max-w-300
           lg:w-[85vw]
           lg:max-w-325
-
           bg-black
-
           rounded-none
           sm:rounded-2xl
-
           overflow-hidden
-
           flex
-
           flex-col
           md:flex-row
-
           shadow-2xl
-
           border
           border-zinc-800
         "
@@ -157,26 +181,17 @@ const PostModal = ({ post, onClose, user }) => {
             absolute
             top-3
             right-3
-
             z-50
-
             w-10
             h-10
-
             rounded-full
-
             bg-black/70
-
             flex
             items-center
             justify-center
-
             text-white
-
             hover:bg-black
-
             transition
-
             md:hidden
           "
         >
@@ -190,28 +205,21 @@ const PostModal = ({ post, onClose, user }) => {
         <div
           className="
             relative
-
             w-full
             md:flex-1
-
             h-[45vh]
             sm:h-[50vh]
             md:h-full
-
             bg-black
-
             flex
             items-center
             justify-center
-
             overflow-hidden
           "
         >
-          {/* ================= REEL ================= */}
-
-          {post.postType === "reel" ? (
+          {updatedPost.postType === "reel" ? (
             <video
-              src={post.media}
+              src={updatedPost.media}
               controls
               autoPlay
               muted
@@ -220,26 +228,20 @@ const PostModal = ({ post, onClose, user }) => {
               className="
                 w-full
                 h-full
-
                 object-contain
-
                 bg-black
               "
             />
           ) : (
-            /* ================= POST IMAGE ================= */
-
             <img
-              src={post.media}
-              alt={post.caption || "Post"}
+              src={updatedPost.media}
+              alt={updatedPost.caption || "Post"}
               className="
                 w-full
                 h-full
-
                 object-contain
-
                 bg-black
-              "
+            "
             />
           )}
         </div>
@@ -253,16 +255,12 @@ const PostModal = ({ post, onClose, user }) => {
             w-full
             md:w-95
             lg:w-105
-
             h-[55vh]
             sm:h-[40vh]
             md:h-full
-
             bg-[#111]
-
             flex
             flex-col
-
             min-w-0
           "
         >
@@ -274,14 +272,11 @@ const PostModal = ({ post, onClose, user }) => {
             className="
               border-b
               border-zinc-800
-
               p-3
               sm:p-4
-
               flex
               justify-between
               items-center
-
               shrink-0
             "
           >
@@ -297,11 +292,8 @@ const PostModal = ({ post, onClose, user }) => {
                   h-10
                   sm:w-11
                   sm:h-11
-
                   rounded-full
-
                   object-cover
-
                   shrink-0
                 "
               />
@@ -317,21 +309,15 @@ const PostModal = ({ post, onClose, user }) => {
               </div>
             </div>
 
-            {/* Desktop Close */}
-
             <IoClose
               onClick={onClose}
               className="
                 hidden
                 md:block
-
                 text-white
                 text-3xl
-
                 cursor-pointer
-
                 hover:text-gray-400
-
                 transition
               "
             />
@@ -345,17 +331,15 @@ const PostModal = ({ post, onClose, user }) => {
             className="
               px-4
               py-3
-
               border-b
               border-zinc-800
-
               shrink-0
             "
           >
             <p className="text-white text-sm wrap-break-word">
               <span className="font-semibold mr-2">{user?.username}</span>
 
-              {post.caption}
+              {updatedPost.caption}
             </p>
           </div>
 
@@ -366,13 +350,9 @@ const PostModal = ({ post, onClose, user }) => {
           <div
             className="
               flex-1
-
               overflow-y-auto
-
               p-4
-
               space-y-5
-
               min-h-0
             "
           >
@@ -382,11 +362,8 @@ const PostModal = ({ post, onClose, user }) => {
                   flex
                   justify-center
                   items-center
-
                   h-full
-
                   text-gray-400
-
                   text-sm
                 "
               >
@@ -408,11 +385,8 @@ const PostModal = ({ post, onClose, user }) => {
                       h-8
                       sm:w-9
                       sm:h-9
-
                       rounded-full
-
                       object-cover
-
                       shrink-0
                     "
                   />
@@ -432,10 +406,6 @@ const PostModal = ({ post, onClose, user }) => {
                       <span className="text-xs text-gray-500">
                         {new Date(comment.createdAt).toLocaleDateString()}
                       </span>
-
-                      <button className="text-xs text-gray-500 hover:text-white">
-                        Reply
-                      </button>
                     </div>
                   </div>
 
@@ -448,15 +418,10 @@ const PostModal = ({ post, onClose, user }) => {
                       className="
                         text-gray-400
                         text-xl
-
                         mt-1
-
                         cursor-pointer
-
                         hover:text-red-500
-
                         transition
-
                         shrink-0
                       "
                     />
@@ -474,7 +439,6 @@ const PostModal = ({ post, onClose, user }) => {
             className="
               border-t
               border-zinc-800
-
               shrink-0
             "
           >
@@ -482,41 +446,40 @@ const PostModal = ({ post, onClose, user }) => {
               className="
                 flex
                 justify-between
-
                 p-3
                 sm:p-4
               "
             >
               <div className="flex gap-5 text-2xl">
-                <FaHeart
-                  className="
-                    text-red-500
-                    cursor-pointer
-                  "
-                />
+                {/* ❤️ LIKE */}
 
-                <FiSend
-                  className="
-                    text-white
-                    cursor-pointer
-                  "
-                />
+                {isLiked ? (
+                  <FaHeart
+                    onClick={handleLike}
+                    className="
+                      text-red-500
+                      cursor-pointer
+                      transition
+                    "
+                  />
+                ) : (
+                  <FaRegHeart
+                    onClick={handleLike}
+                    className="
+                      text-white
+                      cursor-pointer
+                      hover:text-red-500
+                      transition
+                    "
+                  />
+                )}
               </div>
-
-              <BsBookmark
-                className="
-                  text-white
-                  text-2xl
-
-                  cursor-pointer
-                "
-              />
             </div>
 
             {/* Likes */}
 
             <div className="px-4 text-white font-semibold text-sm">
-              {post.likes?.length || 0} likes
+              {updatedPost.likes?.length || 0} likes
             </div>
 
             {/* Date */}
@@ -525,12 +488,11 @@ const PostModal = ({ post, onClose, user }) => {
               className="
                 px-4
                 pb-3
-
                 text-xs
                 text-gray-400
               "
             >
-              {new Date(post.createdAt).toLocaleDateString()}
+              {new Date(updatedPost.createdAt).toLocaleDateString()}
             </div>
           </div>
 
@@ -542,15 +504,11 @@ const PostModal = ({ post, onClose, user }) => {
             className="
               border-t
               border-zinc-800
-
               flex
               items-center
-
               p-3
               sm:p-4
-
               gap-3
-
               shrink-0
             "
           >
@@ -560,17 +518,11 @@ const PostModal = ({ post, onClose, user }) => {
               placeholder="Add a comment..."
               className="
                 flex-1
-
                 min-w-0
-
                 bg-transparent
-
                 outline-none
-
                 text-white
-
                 text-sm
-
                 placeholder:text-zinc-500
               "
             />
@@ -579,15 +531,10 @@ const PostModal = ({ post, onClose, user }) => {
               onClick={handlePost}
               className="
                 text-blue-500
-
                 font-semibold
-
                 hover:text-blue-400
-
                 transition
-
                 text-sm
-
                 shrink-0
               "
             >

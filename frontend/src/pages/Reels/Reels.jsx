@@ -17,7 +17,7 @@ const Reels = () => {
   const reels = postSelector.filter((item) => item.postType === "reel");
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen  bg-black text-white">
       {/* =====================================================
           MAIN CONTENT
       ====================================================== */}
@@ -54,7 +54,8 @@ const Reels = () => {
           ) : (
             <div
               className="
-                min-h-[80vh]
+                h-[95vh]
+                w-[95vw]
                 flex
                 items-center
                 justify-center
